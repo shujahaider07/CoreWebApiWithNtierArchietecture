@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Model;
 using Repository;
 
 
@@ -26,13 +27,61 @@ namespace CoreWebApi.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetStudentsByid(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetStudentsByid(int id)
+        {
+
+            return Ok(await stu.GetStudentsById(id));
+
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddStudnt(Students s)
+        {
+
+            //var add = await stu.Addstudents(s);
+            //return CreatedAtAction(nameof(GetStudents), new { id = add.Id });
+                try
+                {
+                    if (s == null)
+                        return BadRequest();
+
+                    var createdStudent = await stu.Addstudents(s);
+
+                    return CreatedAtAction(nameof(GetStudents),
+                        new { id = createdStudent.Id }, createdStudent);
+                }
+                catch (Exception)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "Error creating new employee record");
+                }
+            }
+        
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateStd(Students s)
+        {
+
+            return Ok(await stu.updateStudent(s));
+
+
+        }
+
+
+        //[HttpDelete]
+        //public IActionResult DelStd(int id)
         //{
 
-        //    return Ok(await stu.GetStudentsById(id));
+        //    return Ok(stu.DeleteStudents(id));
+
 
         //}
+
+
 
 
     }
