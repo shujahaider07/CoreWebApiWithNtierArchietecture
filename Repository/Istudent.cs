@@ -15,7 +15,8 @@ namespace Repository
         public Task<Students> GetStudentsById(int id);
 
 
-        public void DeleteStudents(int id);
+        public Task<Students>DeleteStudents(int id);
+
         public Task<Students> updateStudent(Students s);
     }
 }

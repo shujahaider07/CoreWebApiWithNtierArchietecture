@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model;
+using System;
 using System.Text;
 
 namespace Repository
@@ -24,17 +25,19 @@ namespace Repository
 
 		}
 
-		public async void DeleteStudents(int id)
+		public async Task<Students>DeleteStudents(int id)
 		{
-			var Delete = await db.std.Where(m=>m.Id ==id).FirstOrDefaultAsync();
-			if (Delete != null)
+            var result = await db.std
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (result != null)
 			{
-				db.std.Remove(Delete);
-				await db.SaveChangesAsync();
-			}
-			
-		}
+                db.std.Remove(result);
+                await db.SaveChangesAsync();
+            }
 
+			return result;
+        }
+      
 		public async Task<IEnumerable<Students>> GetStudents()
 		{
 			return await db.std.ToListAsync();

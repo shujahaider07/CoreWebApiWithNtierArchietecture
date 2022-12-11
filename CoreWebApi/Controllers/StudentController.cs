@@ -44,23 +44,23 @@ namespace CoreWebApi.Controllers
 
             //var add = await stu.Addstudents(s);
             //return CreatedAtAction(nameof(GetStudents), new { id = add.Id });
-                try
-                {
-                    if (s == null)
-                        return BadRequest();
+            try
+            {
+                if (s == null)
+                    return BadRequest();
 
-                    var createdStudent = await stu.Addstudents(s);
+                var createdStudent = await stu.Addstudents(s);
 
-                    return CreatedAtAction(nameof(GetStudents),
-                        new { id = createdStudent.Id }, createdStudent);
-                }
-                catch (Exception)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError,
-                        "Error creating new employee record");
-                }
+                return CreatedAtAction(nameof(GetStudents),
+                    new { id = createdStudent.Id }, createdStudent);
             }
-        
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error creating new employee record");
+            }
+        }
+
 
         [HttpPut]
         public async Task<IActionResult> UpdateStd(Students s)
@@ -72,17 +72,26 @@ namespace CoreWebApi.Controllers
         }
 
 
-        //[HttpDelete]
-        //public IActionResult DelStd(int id)
-        //{
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Students>> DeleteEmployee(int id)
+        {
+            try
+            {
+                var employeeToDelete = await stu.GetStudentsById(id);
 
-        //    return Ok(stu.DeleteStudents(id));
+                if (employeeToDelete == null)
+                {
+                    return NotFound($"Employee with Id = {id} not found");
+                }
 
-
-        //}
-
-
-
+                return await stu.DeleteStudents(id);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error deleting data");
+            }
+        }
 
     }
 }
